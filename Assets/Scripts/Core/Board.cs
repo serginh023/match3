@@ -6,21 +6,16 @@ public class Board : MonoBehaviour
 {
     public Transform m_emptySprite;
 
-    public int m_height = 20;
-    public int m_width = 10;
-    public int m_header = 4;
+    public int m_height = 9;
+    public int m_width = 9;
+    public int m_header = 1;
 
-    Transform[,] m_grid;
+    public Transform[,] m_grid;
 
-    // Start is called before the first frame update
-    void Start()
+    public void DrawEmptyCells()
     {
         m_grid = new Transform[m_width, m_height];
-        DrawEmptyCells();
-    }
 
-    void DrawEmptyCells()
-    {
         if (m_emptySprite != null)
             for (int i = 0; i < m_height - m_header; i++)
                 for (int j = 0; j < m_width; j++)
@@ -31,7 +26,7 @@ public class Board : MonoBehaviour
                     clone.transform.parent = transform;
                 }
         else
-            Debug.LogWarning("WARNING! PLease assign the emptySprite object!");
+            Debug.LogWarning("WARNING! Please assign the emptySprite object!");
     }
 
     bool IsWithinBoard(int x, int y)
@@ -39,12 +34,43 @@ public class Board : MonoBehaviour
         return (x >= 0 && x < m_width && y >= 0);
     }
 
-    public bool isOccupied(int x, int y, Piece piece)
+    public bool isOccupied(int x, int y/*, Piece piece*/)
     {
-        return (m_grid[x, y] != null && m_grid[x, y] != piece.transform);
+        return (m_grid[x, y] != null /*&& m_grid[x, y] != piece.transform*/);
     }
 
+    public void StorePieceInGrid(Piece piece)
+    {
+        if (piece == null)
+            return;
+        else
+        {
+            Vector3 pos = (piece.transform.position);
+            piece.transform.parent = transform;
+            m_grid[(int) pos.x, (int) pos.y] = piece.transform;
+        }
+    }
 
+    public bool IsValidPosition(Piece piece)
+    {
+        Vector3 position = piece.transform.position;
 
+        if ( !IsWithinBoard((int) position.x, (int) position.y) )
+        {
+            return false;
+        }
+
+        if ( isOccupied( (int) position.x, (int) position.y) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    //public bool VerifyCouple(Piece piece1, Piece piece2)
+    //{
+
+    //}
 
 }

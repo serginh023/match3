@@ -174,7 +174,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 9
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -198,7 +198,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.5, y: 8, z: -10}
+  m_LocalPosition: {x: 2.5, y: 4, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -249,9 +249,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_emptySprite: {fileID: 8266431797342032905, guid: 80d0d3bce39caf548a0fd20428f8da94,
     type: 3}
-  m_height: 20
-  m_width: 10
-  m_header: 4
+  m_height: 10
+  m_width: 9
+  m_header: 1
 --- !u!1 &1279680593
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,8 +295,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c04e152dbf3b7324e9cbb93cda9fef44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  piece: {fileID: 0}
-  m_board: {fileID: 0}
+  pieces:
+  - {fileID: 2249584213642334211, guid: e73e9d32541775f4ba3b509d30f888f6, type: 3}
+  - {fileID: 7981441158757488698, guid: a90ba96fa5135124eb7290ce8bbfc7cb, type: 3}
+  - {fileID: 8352653270051773626, guid: 1499c08c744e9124daabd4d30e2622e5, type: 3}
+  - {fileID: 2903751920010573877, guid: 198bc88600dd1a1449f084cd23af29b5, type: 3}
+  - {fileID: 9147326319651881352, guid: 7bfbeb4843ca1034ebe5446c22623fac, type: 3}
+  - {fileID: 8160299191457917827, guid: fd3ffed21d1887149aa3e8f584e5b1dd, type: 3}
+  - {fileID: 7768824871087260358, guid: f925912fb82d287458d241f91b606fe9, type: 3}
 --- !u!1 &1569138419
 GameObject:
   m_ObjectHideFlags: 0
@@ -336,6 +342,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1654770914}
+  - component: {fileID: 1654770915}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -357,3 +364,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1654770915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654770913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9855512add37e3f40ba26fc5e3be4645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Spawner: {fileID: 1279680595}
+  m_Board: {fileID: 537329692}

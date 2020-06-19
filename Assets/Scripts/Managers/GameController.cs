@@ -4,15 +4,56 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    [SerializeField]
+    private Spawner m_Spawner;
+    [SerializeField]
+    private Board m_Board;
+
+    private Piece m_activePiece1 = null;
+    private Piece m_activePiece2 = null;
+
     // Start is called before the first frame update
     void Start()
+    {
+        m_Board.DrawEmptyCells();
+
+        for (int i = 0; i < m_Board.m_width; i++)
+            for (int j = 0; j < m_Board.m_height - m_Board.m_header; j++)
+            {
+                Piece piece = m_Spawner.SpawnAtPosition(new Vector3(i, j, 0));
+                m_Board.StorePieceInGrid(piece);
+            }
+
+    }
+
+    private void VerifyPieces(Piece piece)
+    {
+        if (m_activePiece1 == null)
+        {
+            m_activePiece1 = piece;
+            return;
+        }
+        else if (m_activePiece2 == null)
+        {
+            m_activePiece2 = piece;
+        }
+
+        if (m_activePiece1 != null && m_activePiece2 != null)
+        {
+            
+        }
+
+    }
+
+
+    private void OnEnable()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
         
     }
+
 }
