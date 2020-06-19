@@ -1,18 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField]
+    private Piece[] pieces;
+    [SerializeField]
+    private Board m_board;
+
+
+    public void InitalSpawn()
     {
-        
+        for(int i = 0; i < m_board.m_width; i++)
+            for(int j = 0; j < m_board.m_height; j++)
+            {
+                
+            }
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public GameObject SpawnAtPosition(int x, int y)
     {
-        
+        int index = (int) Random.Range(0, pieces.Length);
+
+        GameObject go = Instantiate(piece[index], new Vector3(x, y, 0), Quaternion.identity) ;
+
+        return go;
     }
 }
