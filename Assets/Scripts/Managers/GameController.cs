@@ -28,19 +28,33 @@ public class GameController : MonoBehaviour
 
     private void VerifyPieces(Piece piece)
     {
+        //m_Board.VerifyRow((int)piece.transform.position.y);
         if (m_activePiece1 == null)
         {
             m_activePiece1 = piece;
             return;
         }
-        else if (m_activePiece2 == null)
+        else if (m_activePiece2 == null && m_activePiece1 != piece)
         {
             m_activePiece2 = piece;
         }
 
         if (m_activePiece1 != null && m_activePiece2 != null)
         {
-            
+            if(m_Board.VerifyCouple(m_activePiece1.transform.position, m_activePiece2.transform.position))
+            {
+                Vector3 aux = m_activePiece1.transform.position;
+                m_activePiece1.transform.position = m_activePiece2.transform.position;
+                m_activePiece2.transform.position = aux;
+
+                m_Board.StorePieceInGrid(m_activePiece1);
+                m_Board.StorePieceInGrid(m_activePiece2);
+                m_Board.VerifyGrid();
+
+            }
+
+            m_activePiece1 = null;
+            m_activePiece2 = null;
         }
 
     }
@@ -48,12 +62,12 @@ public class GameController : MonoBehaviour
 
     private void OnEnable()
     {
-        
+        Piece.ClickEvent += VerifyPieces;
     }
 
     private void OnDisable()
     {
-        
+        Piece.ClickEvent -= VerifyPieces;
     }
 
 }
