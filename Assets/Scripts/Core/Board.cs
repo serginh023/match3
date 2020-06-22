@@ -8,10 +8,13 @@ public class Board : MonoBehaviour
     public Transform m_emptySprite;
     [SerializeField]
     private Spawner m_spawner;
+    [SerializeField]
+    private ScoreManager m_scoreManager;
 
     public int m_height = 9;
     public int m_width = 9;
     public int m_header = 1;
+    public bool m_won = false;
 
     public Transform[,] m_grid;
 
@@ -78,7 +81,9 @@ public class Board : MonoBehaviour
 
     public void VerifyGridCombination()
     {
-        for(int i = 0; i < m_height - m_header; i++)
+        m_won = false;
+
+        for (int i = 0; i < m_height - m_header; i++)
             VerifyRowCombination(i);
 
         for (int j = 0; j < m_width; j++)
@@ -104,7 +109,11 @@ public class Board : MonoBehaviour
                             break;
 
                 if (positionsToDelete.Count >= 3)
+                {
                     DeleteCombination(positionsToDelete);
+                    m_scoreManager.Score(positionsToDelete.Count);
+                    m_won = true;
+                }
 
                 positionsToDelete.Clear();
             }
@@ -128,7 +137,11 @@ public class Board : MonoBehaviour
                             break;
 
                 if (positionsToDelete.Count >= 3)
+                {
                     DeleteCombination(positionsToDelete);
+                    m_scoreManager.Score(positionsToDelete.Count);
+                    m_won = true;
+                }
 
                 positionsToDelete.Clear();
             }
@@ -139,7 +152,6 @@ public class Board : MonoBehaviour
     {
         foreach(Vector2 position in positions)
         {
-            //Debug.Log("deletando: " + position.x + ", " + position.y);
             if ( m_grid[(int)position.x, (int)position.y] != null ) Destroy(m_grid[(int) position.x, (int) position.y].gameObject);
             m_grid[(int)position.x, (int)position.y] = null;
         }
@@ -169,8 +181,5 @@ public class Board : MonoBehaviour
 
         //Precisa dar spwan em um novo elemento no topo do grid
         m_grid[i, m_height - m_header - 1] = m_spawner.SpawnAtPosition(new Vector3(i, m_height - m_header - 1, 0)).transform;
-
-
-
     }
 }

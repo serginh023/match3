@@ -16,14 +16,23 @@ public class GameController : MonoBehaviour
     void Start()
     {
         m_Board.DrawEmptyCells();
+        Shuffle();
 
+        m_Board.VerifyGridCombination();
+        while (m_Board.m_won)
+        {
+            m_Board.VerifyGridCombination();
+        }
+    }
+
+    private void Shuffle()
+    {
         for (int i = 0; i < m_Board.m_width; i++)
             for (int j = 0; j < m_Board.m_height - m_Board.m_header; j++)
             {
                 Piece piece = m_Spawner.SpawnAtPosition(new Vector3(i, j, 0));
                 m_Board.StorePieceInGrid(piece);
             }
-
     }
 
     private void VerifyPieces(Piece piece)
@@ -55,6 +64,11 @@ public class GameController : MonoBehaviour
 
             m_activePiece1 = null;
             m_activePiece2 = null;
+        }
+
+        while (m_Board.m_won)
+        {
+            m_Board.VerifyGridCombination();
         }
 
     }
