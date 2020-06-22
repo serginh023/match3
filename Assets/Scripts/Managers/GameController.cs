@@ -41,7 +41,7 @@ public class GameController : MonoBehaviour
 
         if (m_activePiece1 != null && m_activePiece2 != null)
         {
-            if(m_Board.VerifyCouple(m_activePiece1.transform.position, m_activePiece2.transform.position))
+            if( m_Board.VerifyCouple(m_activePiece1.transform.position, m_activePiece2.transform.position) )
             {
                 Vector3 aux = m_activePiece1.transform.position;
                 m_activePiece1.transform.position = m_activePiece2.transform.position;
@@ -49,7 +49,7 @@ public class GameController : MonoBehaviour
 
                 m_Board.StorePieceInGrid(m_activePiece1);
                 m_Board.StorePieceInGrid(m_activePiece2);
-                m_Board.VerifyGrid();
+                m_Board.VerifyGridCombination();
 
             }
 

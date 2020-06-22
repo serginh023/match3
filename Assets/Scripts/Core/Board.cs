@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Board : MonoBehaviour
 {
     public Transform m_emptySprite;
+    [SerializeField]
+    private Spawner m_spawner;
 
     public int m_height = 9;
     public int m_width = 9;
@@ -34,9 +37,9 @@ public class Board : MonoBehaviour
         return (x >= 0 && x < m_width && y >= 0);
     }
 
-    public bool isOccupied(int x, int y/*, Piece piece*/)
+    public bool isOccupied(int x, int y)
     {
-        return (m_grid[x, y] != null /*&& m_grid[x, y] != piece.transform*/);
+        return (m_grid[x, y] != null);
     }
 
     public void StorePieceInGrid(Piece piece)
@@ -56,14 +59,10 @@ public class Board : MonoBehaviour
         Vector3 position = piece.transform.position;
 
         if (!IsWithinBoard((int)position.x, (int)position.y))
-        {
             return false;
-        }
 
         if (isOccupied((int)position.x, (int)position.y))
-        {
             return false;
-        }
 
         return true;
     }
@@ -72,60 +71,106 @@ public class Board : MonoBehaviour
     {
 
         if (Vector3.Distance(piece1, piece2) != 1)
-        {
             return false;
-        }
         else
-        {
             return true;
-        }
     }
 
-    public void VerifyGrid()
+    public void VerifyGridCombination()
     {
         for(int i = 0; i < m_height - m_header; i++)
-        {
-            VerifyRow(i);
-        }
+            VerifyRowCombination(i);
+
+        for (int j = 0; j < m_width; j++)
+            VerifyColumnCombination(j);
+
     }
 
-    public void VerifyRow(int y)
+    public void VerifyRowCombination(int y)
     {
-        int elementCounter = 0;
         List<Vector2> positionsToDelete = new List<Vector2>();
 
         for ( int i = 0; i < m_width - 1; i++ )
             if (m_grid[i, y] != null)
             {
                 positionsToDelete.Add(m_grid[i, y].position);
-                elementCounter = 1;
 
                 for (int j = i + 1; j < m_width; j++)
+
                     if(m_grid[j, y] != null && m_grid[i, y] != null)
                         if ( m_grid[i, y].name.Equals(m_grid[j, y].name) )
-                        {
-                            elementCounter++;
                             positionsToDelete.Add(m_grid[j, y].position);
-                        }
                         else
                             break;
 
-                if (elementCounter >= 3)
+                if (positionsToDelete.Count >= 3)
                     DeleteCombination(positionsToDelete);
 
                 positionsToDelete.Clear();
             }
-        
+    }
+
+    public void VerifyColumnCombination(int x)
+    {
+        List<Vector2> positionsToDelete = new List<Vector2>();
+
+        for (int i = 0; i < m_height - m_header - 1; i++)
+            if (m_grid[x, i] != null)
+            {
+                positionsToDelete.Add(m_grid[x, i].position);
+
+                for (int j = i + 1; j < m_height - m_header; j++)
+
+                    if (m_grid[x, j] != null && m_grid[x, i] != null)
+                        if (m_grid[x, i].name.Equals(m_grid[x, j].name))
+                            positionsToDelete.Add(m_grid[x, j].position);
+                        else
+                            break;
+
+                if (positionsToDelete.Count >= 3)
+                    DeleteCombination(positionsToDelete);
+
+                positionsToDelete.Clear();
+            }
+
     }
 
     private void DeleteCombination(List<Vector2> positions)
     {
         foreach(Vector2 position in positions)
         {
-            //Debug.Log("deletando: " + position.x + ", " + position.y + " " + m_grid[(int)position.x, (int)position.y].gameObject.name);
-            Destroy(m_grid[(int) position.x, (int) position.y].gameObject);
+            //Debug.Log("deletando: " + position.x + ", " + position.y);
+            if ( m_grid[(int)position.x, (int)position.y] != null ) Destroy(m_grid[(int) position.x, (int) position.y].gameObject);
             m_grid[(int)position.x, (int)position.y] = null;
         }
+
+        ClearAllNullPieces();
     }
 
+
+    private void ClearAllNullPieces()
+    {
+        for (int i = 0; i < m_width; i++)
+            for (int j = 0; j < m_height - m_header; j++)
+                if (m_grid[i, j] == null)
+                {
+                    ShiftElementsDown(i, j);
+                    j--;
+                }
+    }
+
+    private void ShiftElementsDown(int i, int j)
+    {
+        for (int k = j; k < m_height - m_header - 1; k++)
+        {
+            m_grid[i, k] = m_grid[i, k+1];
+            if(m_grid[i, k] != null) m_grid[i, k].transform.position += new Vector3(0, -1, 0);
+        }
+
+        //Precisa dar spwan em um novo elemento no topo do grid
+        m_grid[i, m_height - m_header - 1] = m_spawner.SpawnAtPosition(new Vector3(i, m_height - m_header - 1, 0)).transform;
+
+
+
+    }
 }
