@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class GameController : MonoBehaviour
 {
     [SerializeField]
@@ -11,6 +12,12 @@ public class GameController : MonoBehaviour
 
     private Piece m_activePiece1 = null;
     private Piece m_activePiece2 = null;
+
+    [SerializeField]
+    private AudioClip m_clipSelectPiece;
+
+    [SerializeField]
+    private AudioClip m_clipClearPieces;
 
     // Start is called before the first frame update
     void Start()
@@ -41,11 +48,13 @@ public class GameController : MonoBehaviour
         if (m_activePiece1 == null)
         {
             m_activePiece1 = piece;
+            AudioSource.PlayClipAtPoint(m_clipSelectPiece, Camera.main.transform.position);
             return;
         }
         else if (m_activePiece2 == null && m_activePiece1 != piece)
         {
             m_activePiece2 = piece;
+            AudioSource.PlayClipAtPoint(m_clipSelectPiece, Camera.main.transform.position);
         }
 
         if (m_activePiece1 != null && m_activePiece2 != null)
@@ -60,6 +69,11 @@ public class GameController : MonoBehaviour
                 m_Board.StorePieceInGrid(m_activePiece2);
                 m_Board.VerifyGridCombination();
 
+                if (m_Board.m_won)
+                {
+                    AudioSource.PlayClipAtPoint(m_clipClearPieces, Camera.main.transform.position);
+                }
+
             }
 
             m_activePiece1 = null;
@@ -69,7 +83,13 @@ public class GameController : MonoBehaviour
         while (m_Board.m_won)
         {
             m_Board.VerifyGridCombination();
+            //O audio de 'clear' não está aqui pois como não tem animação de clear vai ficar um áudio em cima do outro e não fica bom
         }
+
+    }
+
+    private void TimerStart()
+    {
 
     }
 
