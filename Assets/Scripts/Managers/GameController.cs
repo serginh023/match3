@@ -19,11 +19,16 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private AudioClip m_clipClearPieces;
 
-    // Start is called before the first frame update
+    [SerializeField]
+    private Timer m_Timer;
+
+
+
     void Start()
     {
         m_Board.DrawEmptyCells();
         Shuffle();
+        TimerStart();
 
         m_Board.VerifyGridCombination();
         while (m_Board.m_won)
@@ -44,7 +49,6 @@ public class GameController : MonoBehaviour
 
     private void VerifyPieces(Piece piece)
     {
-        //m_Board.VerifyRow((int)piece.transform.position.y);
         if (m_activePiece1 == null)
         {
             m_activePiece1 = piece;
@@ -90,6 +94,19 @@ public class GameController : MonoBehaviour
 
     private void TimerStart()
     {
+        if (m_Timer != null)
+            m_Timer.StartTimer();
+        else
+            Debug.LogWarning("GAMECONTROLLER-> TIMERSTART m_Timer not vinculated");
+    }
+
+    private void TimerStopped()
+    {
+        
+    }
+
+    private void GameOver()
+    {
 
     }
 
@@ -97,11 +114,13 @@ public class GameController : MonoBehaviour
     private void OnEnable()
     {
         Piece.ClickEvent += VerifyPieces;
+        Timer.m_EventEndTimer += TimerStopped;
     }
 
     private void OnDisable()
     {
         Piece.ClickEvent -= VerifyPieces;
+        Timer.m_EventEndTimer -= TimerStopped;
     }
 
 }
