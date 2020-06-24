@@ -22,6 +22,7 @@ public class Board : MonoBehaviour
     public void DrawEmptyCells()
     {
         m_grid = new Transform[m_width, m_height];
+        m_scoreManager.Reset();
 
         if (m_emptySprite != null)
             for (int i = 0; i < m_height - m_header; i++)
@@ -60,7 +61,8 @@ public class Board : MonoBehaviour
 
     public void ErasePosition(int x, int y)
     {
-        if (m_grid[x, y] != null) Destroy(m_grid[x, y].gameObject);
+        if (m_grid[x, y] != null) 
+            Destroy(m_grid[x, y].gameObject);
 
         m_grid[x, y] = null;
     }
@@ -174,7 +176,6 @@ public class Board : MonoBehaviour
                     else
                     {
                         m_hasValidChance = true;
-                        Debug.Log("entrou aqui");
                         positionsToDelete.Clear();
                         return;
                     }
@@ -248,7 +249,7 @@ public class Board : MonoBehaviour
 
     void ChangeRight(int x, int y)
     {
-        Debug.Log("(" + x + ", " + y + ")");
+        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x, y + 1];
@@ -259,7 +260,7 @@ public class Board : MonoBehaviour
 
     void ChangeLeft(int x, int y)
     {
-        Debug.Log("(" + x + ", " + y + ")");
+        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x, y - 1];
@@ -270,7 +271,7 @@ public class Board : MonoBehaviour
 
     void ChangeUp(int x, int y)
     {
-        Debug.Log("(" + x + ", " + y + ")");
+        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x + 1, y];
@@ -281,7 +282,7 @@ public class Board : MonoBehaviour
 
     void ChangeDown(int x, int y)
     {
-        Debug.Log("(" + x + ", " + y + ")");
+        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x - 1, y];
@@ -324,6 +325,8 @@ public class Board : MonoBehaviour
         }
 
         //Precisa dar spwan em um novo elemento no topo do grid
-        m_grid[i, m_height - m_header - 1] = m_spawner.SpawnAtPosition(new Vector3(i, m_height - m_header - 1, 0)).transform;
+        Piece piece = m_spawner.SpawnAtPosition(new Vector3(i, m_height - m_header - 1, 0));
+        m_grid[i, m_height - m_header - 1] = piece.transform;
+        StorePieceInGrid(piece);
     }
 }

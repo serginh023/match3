@@ -44,7 +44,6 @@ public class GameController : MonoBehaviour
 
         m_Board.VerifyAnyChance();
 
-
         while (!m_Board.m_hasValidChance)
         {
             Shuffle();
@@ -149,6 +148,8 @@ public class GameController : MonoBehaviour
     public void Restart()
     {
         TogglePause();
+        
+        StartGame();
 
     }
 
