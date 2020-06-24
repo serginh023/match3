@@ -31,14 +31,27 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        StartGame();
+    }
+
+    private void StartGame()
+    {
         m_Board.DrawEmptyCells();
+
         Shuffle();
+
+        m_Board.VerifyGridCombination(true);
+
+        m_Board.VerifyAnyChance();
+
+
+        while (!m_Board.m_hasValidChance)
+        {
+            Shuffle();
+            m_Board.VerifyAnyChance();
+        }
+
         TimerStart();
-
-        m_Board.VerifyGridCombination();
-
-        while (m_Board.m_won)
-            m_Board.VerifyGridCombination();
     }
 
     private void Shuffle()
@@ -46,6 +59,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < m_Board.m_width; i++)
             for (int j = 0; j < m_Board.m_height - m_Board.m_header; j++)
             {
+                m_Board.ErasePosition(i, j);
                 Piece piece = m_Spawner.SpawnAtPosition(new Vector3(i, j, 0));
                 m_Board.StorePieceInGrid(piece);
             }
@@ -56,14 +70,12 @@ public class GameController : MonoBehaviour
         if (m_activePiece1 == null)
         {
             m_activePiece1 = piece;
-            m_activePiece1.gameObject.GetComponent<SpriteRenderer>().color = new Color(.9f, .9f, .9f, .5f);
             AudioSource.PlayClipAtPoint(m_clipSelectPiece, Camera.main.transform.position);
             return;
         }
         else if (m_activePiece2 == null && m_activePiece1 != piece)
         {
             m_activePiece2 = piece;
-            m_activePiece2.gameObject.GetComponent<SpriteRenderer>().color = new Color(.9f, .9f, .9f, .5f);
             AudioSource.PlayClipAtPoint(m_clipSelectPiece, Camera.main.transform.position);
         }
 
@@ -73,7 +85,7 @@ public class GameController : MonoBehaviour
             {
                 SwapPiecesPositions();
 
-                m_Board.VerifyGridCombination();
+                m_Board.VerifyGridCombination(true);
 
                 if (m_Board.m_won)
                     AudioSource.PlayClipAtPoint(m_clipClearPieces, Camera.main.transform.position);
@@ -82,14 +94,22 @@ public class GameController : MonoBehaviour
             }
 
             m_activePiece1.gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
-            m_activePiece1 = null;
             m_activePiece2.gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            m_activePiece1 = null;
             m_activePiece2 = null;
         }
 
         while (m_Board.m_won)
-            m_Board.VerifyGridCombination();
-            //O audio de 'clear' não está aqui pois como não tem animação de clear vai ficar um áudio em cima do outro e não fica bom
+            m_Board.VerifyGridCombination(true);
+
+        //O audio de 'clear' não está aqui pois como não tem animação de clear vai ficar um áudio em cima do outro e não fica bom
+        m_Board.VerifyAnyChance();
+
+        if (!m_Board.m_hasValidChance)
+        {
+            GameOver();
+        }
+
     }
 
     private void SwapPiecesPositions()
@@ -126,6 +146,11 @@ public class GameController : MonoBehaviour
         m_IsPaused = !m_IsPaused;
     }
 
+    public void Restart()
+    {
+        TogglePause();
+
+    }
 
 
 

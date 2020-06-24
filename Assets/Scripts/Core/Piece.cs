@@ -36,6 +36,8 @@ public class Piece : MonoBehaviour
 
     private void OnMouseDown()
     {
+        GetComponent<SpriteRenderer>().color = new Color(.9f, .9f, .9f, .5f);
+
         if (ClickEvent != null)
 
             ClickEvent(this);

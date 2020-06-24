@@ -760,6 +760,7 @@ MonoBehaviour:
   m_width: 9
   m_header: 1
   m_won: 0
+  m_hasValidChance: 0
 --- !u!1 &577870087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1564,7 +1565,7 @@ MonoBehaviour:
   m_clipSelectPiece: {fileID: 8300000, guid: 1a2903f4c36d56f45b96cea58daa0c5b, type: 3}
   m_clipClearPieces: {fileID: 8300000, guid: 8442d9fb010bc1843908973033affcfe, type: 3}
   m_Timer: {fileID: 577870089}
-  m_CanvasGameOver: {fileID: 0}
+  m_CanvasGameOver: {fileID: 131971295}
 --- !u!82 &1654770916
 AudioSource:
   m_ObjectHideFlags: 0

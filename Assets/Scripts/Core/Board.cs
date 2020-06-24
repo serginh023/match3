@@ -15,6 +15,7 @@ public class Board : MonoBehaviour
     public int m_width = 9;
     public int m_header = 1;
     public bool m_won = false;
+    public bool m_hasValidChance = false;
 
     public Transform[,] m_grid;
 
@@ -37,7 +38,7 @@ public class Board : MonoBehaviour
 
     bool IsWithinBoard(int x, int y)
     {
-        return (x >= 0 && x < m_width && y >= 0);
+        return (x >= 0 && x < m_width && y >= 0 && y < m_height - m_header);
     }
 
     public bool isOccupied(int x, int y)
@@ -57,6 +58,13 @@ public class Board : MonoBehaviour
         }
     }
 
+    public void ErasePosition(int x, int y)
+    {
+        if (m_grid[x, y] != null) Destroy(m_grid[x, y].gameObject);
+
+        m_grid[x, y] = null;
+    }
+
     public bool IsValidPosition(Piece piece)
     {
         Vector3 position = piece.transform.position;
@@ -72,7 +80,6 @@ public class Board : MonoBehaviour
 
     public bool VerifyCouple(Vector3 piece1, Vector3 piece2)
     {
-
         if (Vector3.Distance(piece1, piece2) != 1)
             return false;
         else
@@ -83,6 +90,8 @@ public class Board : MonoBehaviour
     {
         m_won = false;
 
+        m_hasValidChance = false;
+
         for (int i = 0; i < m_height - m_header; i++)
             VerifyRowCombination(i, valid);
 
@@ -91,7 +100,7 @@ public class Board : MonoBehaviour
             for (int j = 0; j < m_width; j++)
                 VerifyColumnCombination(j, valid);
         }
-        else if(!m_won)
+        else if (!m_hasValidChance)
         {
             for (int j = 0; j < m_width; j++)
                 VerifyColumnCombination(j, valid);
@@ -99,7 +108,7 @@ public class Board : MonoBehaviour
 
     }
 
-    public void VerifyRowCombination(int y, bool valid = true)
+    public void VerifyRowCombination(int y, bool valid = false)
     {
         List<Vector2> positionsToDelete = new List<Vector2>();
 
@@ -112,7 +121,7 @@ public class Board : MonoBehaviour
 
                     if (m_grid[j, y] != null && m_grid[i, y] != null)
                         if (m_grid[i, y].name.Equals(m_grid[j, y].name))
-                            positionsToDelete.Add(m_grid[j, y].position;
+                            positionsToDelete.Add(m_grid[j, y].position);
                         else
                             break;
 
@@ -122,9 +131,14 @@ public class Board : MonoBehaviour
                     {
                         DeleteCombination(positionsToDelete);
                         m_scoreManager.Score(positionsToDelete.Count);
+                        m_won = true;
                     }
-
-                    m_won = true;
+                    else
+                    {
+                        m_hasValidChance = true;
+                        positionsToDelete.Clear();
+                        return;
+                    }
 
                 }
 
@@ -145,7 +159,7 @@ public class Board : MonoBehaviour
 
                     if (m_grid[x, j] != null && m_grid[x, i] != null)
                         if (m_grid[x, i].name.Equals(m_grid[x, j].name))
-                            positionsToDelete.Add(m_grid[x, j].position;
+                            positionsToDelete.Add(m_grid[x, j].position);
                         else
                             break;
 
@@ -155,79 +169,128 @@ public class Board : MonoBehaviour
                     {
                         DeleteCombination(positionsToDelete);
                         m_scoreManager.Score(positionsToDelete.Count);
+                        m_won = true;
                     }
-
-                    m_won = true;
+                    else
+                    {
+                        m_hasValidChance = true;
+                        Debug.Log("entrou aqui");
+                        positionsToDelete.Clear();
+                        return;
+                    }
                 }
 
                 positionsToDelete.Clear();
             }
     }
 
-    private bool VerifyAnyChance()
+    public bool VerifyAnyChance()
     {
         for(int i = 0; i < m_width; i++)
             for (int j = 0; j < m_height - m_header; j++)
             {
-                Transform aux = m_grid[i, j];
-
                 //Verificação para a Direita
                 if (IsWithinBoard(i, j + 1))
                 {
-                    m_grid[i, j] = m_grid[i, j + 1];
-                    m_grid[i, j + 1] = aux;
-                    m_grid[i, j].gameObject.GetComponent<Piece>().MoveLeft();
-                    m_grid[i, j + 1].gameObject.GetComponent<Piece>().MoveRight();
+                    ChangeRight(i, j);
 
                     VerifyGridCombination();
-                    if (m_won)
+
+                    ChangeRight(i, j);
+
+                    if (m_hasValidChance)
                         return true;
                 }
 
                 //Verificação para a Esquerda
                 if (IsWithinBoard(i, j - 1))
                 {
-                    m_grid[i, j] = m_grid[i, j - 1];
-                    m_grid[i, j - 1] = aux;
-                    m_grid[i, j].gameObject.GetComponent<Piece>().MoveRight();
-                    m_grid[i, j - 1].gameObject.GetComponent<Piece>().MoveLeft();
+                    ChangeLeft(i, j);
 
                     VerifyGridCombination();
-                    if (m_won)
+
+                    ChangeLeft(i, j);
+
+                    if (m_hasValidChance)
                         return true;
                 }
 
                 //Verificação para Cima
                 if (IsWithinBoard(i + 1, j))
                 {
-                    m_grid[i, j] = m_grid[i + 1, j];
-                    m_grid[i + 1, j] = aux;
-                    m_grid[i, j].gameObject.GetComponent<Piece>().MoveDown();
-                    m_grid[i + 1, j].gameObject.GetComponent<Piece>().MoveUp();
+                    ChangeUp(i, j);
 
                     VerifyGridCombination();
-                    if (m_won)
+
+                    ChangeUp(i, j);
+
+                    if (m_hasValidChance)
                         return true;
                 }
 
                 //Verificação para Baixo
                 if (IsWithinBoard(i - 1, j))
                 {
-                    m_grid[i, j] = m_grid[i - 1, j];
-                    m_grid[i - 1, j] = aux;
-                    m_grid[i, j].gameObject.GetComponent<Piece>().MoveUp();
-                    m_grid[i - 1, j].gameObject.GetComponent<Piece>().MoveDown();
+                    ChangeDown(i, j);
 
                     VerifyGridCombination();
-                    if (m_won)
+
+                    ChangeDown(i, j);
+
+                    if (m_hasValidChance)
                         return true;
                 }
-
-
             }
 
         return false;
     }
+
+
+    void ChangeRight(int x, int y)
+    {
+        Debug.Log("(" + x + ", " + y + ")");
+        Transform aux = m_grid[x, y];
+
+        m_grid[x, y] = m_grid[x, y + 1];
+        m_grid[x, y + 1] = aux;
+        m_grid[x, y].gameObject.GetComponent<Piece>().MoveLeft();
+        m_grid[x, y + 1].gameObject.GetComponent<Piece>().MoveRight();
+    }
+
+    void ChangeLeft(int x, int y)
+    {
+        Debug.Log("(" + x + ", " + y + ")");
+        Transform aux = m_grid[x, y];
+
+        m_grid[x, y] = m_grid[x, y - 1];
+        m_grid[x, y - 1] = aux;
+        m_grid[x, y].gameObject.GetComponent<Piece>().MoveRight();
+        m_grid[x, y - 1].gameObject.GetComponent<Piece>().MoveLeft();
+    }
+
+    void ChangeUp(int x, int y)
+    {
+        Debug.Log("(" + x + ", " + y + ")");
+        Transform aux = m_grid[x, y];
+
+        m_grid[x, y] = m_grid[x + 1, y];
+        m_grid[x + 1, y] = aux;
+        m_grid[x, y].gameObject.GetComponent<Piece>().MoveDown();
+        m_grid[x + 1, y].gameObject.GetComponent<Piece>().MoveUp();
+    }
+
+    void ChangeDown(int x, int y)
+    {
+        Debug.Log("(" + x + ", " + y + ")");
+        Transform aux = m_grid[x, y];
+
+        m_grid[x, y] = m_grid[x - 1, y];
+        m_grid[x - 1, y] = aux;
+        m_grid[x, y].gameObject.GetComponent<Piece>().MoveUp();
+        m_grid[x - 1, y].gameObject.GetComponent<Piece>().MoveDown();
+    }
+
+
 
     private void DeleteCombination(List<Vector2> positions)
     {
