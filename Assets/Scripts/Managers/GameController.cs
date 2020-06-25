@@ -188,6 +188,8 @@ public class GameController : MonoBehaviour
 
         m_CanvasOverlay.SetActive(!m_IsPaused);
 
+        m_CanvasPause.SetActive(m_IsPaused);
+
         m_Board.SetBoardActive(!m_IsPaused);
 
         m_scoreManager.Reset();
@@ -204,6 +206,24 @@ public class GameController : MonoBehaviour
         m_CanvasOverlay.SetActive(!m_IsPaused);
 
         m_Board.SetBoardActive(!m_IsPaused);
+
+        m_Timer.PauseTimer();
+    }
+
+
+    public void Resume()
+    {
+        TogglePause();
+
+        m_CanvasPause.SetActive(m_IsPaused);
+
+        m_CanvasOverlay.SetActive(!m_IsPaused);
+
+        m_Board.SetBoardActive(!m_IsPaused);
+
+        m_CanvasGameOver.SetActive(m_IsPaused);
+
+        m_Timer.ResumeTimer();
     }
 
 

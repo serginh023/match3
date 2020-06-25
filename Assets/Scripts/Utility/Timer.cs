@@ -24,11 +24,20 @@ public class Timer : MonoBehaviour
         m_IsTiming = true;
     }
 
+    public void ResumeTimer()
+    {
+        m_IsTiming = true;
+    }
+
+    public void PauseTimer()
+    {
+        m_IsTiming = false;
+    }
+
     public void StartTimer(float newTime)
     {
         timer = Mathf.Clamp(newTime, 0, newTime);
     }
-
 
     void FixedUpdate()
     {
