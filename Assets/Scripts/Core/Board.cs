@@ -13,6 +13,7 @@ public class Board : MonoBehaviour
 
     public int m_height = 9;
     public int m_width = 9;
+    public int m_posz = -5;
     public int m_header = 1;
     public bool m_won = false;
     public bool m_hasValidChance = false;
@@ -22,14 +23,14 @@ public class Board : MonoBehaviour
     public void DrawEmptyCells()
     {
         m_grid = new Transform[m_width, m_height];
-        m_scoreManager.Reset();
+
 
         if (m_emptySprite != null)
             for (int i = 0; i < m_height - m_header; i++)
                 for (int j = 0; j < m_width; j++)
                 {
                     Transform clone;
-                    clone = Instantiate(m_emptySprite, new Vector3(j, i, 0), Quaternion.identity) as Transform;
+                    clone = Instantiate(m_emptySprite, new Vector3(j, i, m_posz), Quaternion.identity) as Transform;
                     clone.name = "Board Space ( x = " + j.ToString() + ", y = " + i.ToString() + ")";
                     clone.transform.parent = transform;
                 }
@@ -98,15 +99,11 @@ public class Board : MonoBehaviour
             VerifyRowCombination(i, valid);
 
         if (valid)
-        {
             for (int j = 0; j < m_width; j++)
                 VerifyColumnCombination(j, valid);
-        }
         else if (!m_hasValidChance)
-        {
             for (int j = 0; j < m_width; j++)
                 VerifyColumnCombination(j, valid);
-        }
 
     }
 
@@ -249,7 +246,6 @@ public class Board : MonoBehaviour
 
     void ChangeRight(int x, int y)
     {
-        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x, y + 1];
@@ -260,7 +256,6 @@ public class Board : MonoBehaviour
 
     void ChangeLeft(int x, int y)
     {
-        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x, y - 1];
@@ -271,7 +266,6 @@ public class Board : MonoBehaviour
 
     void ChangeUp(int x, int y)
     {
-        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x + 1, y];
@@ -282,7 +276,6 @@ public class Board : MonoBehaviour
 
     void ChangeDown(int x, int y)
     {
-        //Debug.Log("(" + x + ", " + y + ")");
         Transform aux = m_grid[x, y];
 
         m_grid[x, y] = m_grid[x - 1, y];
@@ -325,8 +318,15 @@ public class Board : MonoBehaviour
         }
 
         //Precisa dar spwan em um novo elemento no topo do grid
-        Piece piece = m_spawner.SpawnAtPosition(new Vector3(i, m_height - m_header - 1, 0));
+        Piece piece = m_spawner.SpawnAtPosition(new Vector3(i, m_height - m_header - 1, m_posz));
         m_grid[i, m_height - m_header - 1] = piece.transform;
         StorePieceInGrid(piece);
+    }
+
+    public void SetBoardActive(bool active)
+    {
+        for(int i = 0; i < m_width; i++)
+            for(int j = 0; j < m_height - m_header; j++)
+                m_grid[i, j].gameObject.GetComponent<Collider2D>().enabled = active;
     }
 }

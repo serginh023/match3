@@ -16,9 +16,12 @@ public class Timer : MonoBehaviour
     public delegate void EndTimerDelegate();
     public static event EndTimerDelegate m_EventEndTimer;
 
+    private bool m_IsTiming = false;
+
     public void StartTimer()
     {
         timer = m_timeLimit;
+        m_IsTiming = true;
     }
 
     public void StartTimer(float newTime)
@@ -29,34 +32,39 @@ public class Timer : MonoBehaviour
 
     void FixedUpdate()
     {
-        timer -= Time.deltaTime;
-
-        if (timer <= 0)
+        if (m_IsTiming)
         {
-            //Evento de parada da fase
-            if (m_EventEndTimer != null)
-                m_EventEndTimer();
-        }
-        else
-        {
-            float minutes = Mathf.Floor(timer / 60);
+            timer -= Time.deltaTime;
 
-            float seconds = Mathf.Floor(timer % 60);
+            if (timer < 0)
+            {
+                //Evento de parada da fase
+                if (m_EventEndTimer != null)
+                    m_EventEndTimer();
 
-            string min = "";
-            string sec = "";
-
-            if (minutes < 10)
-                min = "0" + minutes.ToString("f0");
+                m_IsTiming = false;
+            }
             else
-                min = minutes.ToString("f0");
+            {
+                float minutes = Mathf.Floor(timer / 60);
 
-            if (seconds < 10)
-                sec = "0" + seconds.ToString("f0");
-            else
-                sec = seconds.ToString("f0" );
+                float seconds = Mathf.Floor(timer % 60);
 
-            m_TimerText.text = min + ":" + sec;
+                string min = "";
+                string sec = "";
+
+                if (minutes < 10)
+                    min = "0" + minutes.ToString("f0");
+                else
+                    min = minutes.ToString("f0");
+
+                if (seconds < 10)
+                    sec = "0" + seconds.ToString("f0");
+                else
+                    sec = seconds.ToString("f0");
+
+                m_TimerText.text = min + ":" + sec;
+            }
         }
     }
 }

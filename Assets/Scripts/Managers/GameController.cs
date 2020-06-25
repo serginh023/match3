@@ -1,11 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class GameController : MonoBehaviour
 {
+    private const int BEST_SCORE = 0;
+    private const string BEST_SCORE_KEY = "bestscorekey";
+
     [SerializeField]
     private Spawner m_Spawner;
     [SerializeField]
@@ -26,18 +30,32 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject m_CanvasGameOver;
 
+    [SerializeField]
+    private GameObject m_CanvasOverlay;
+
+    [SerializeField]
+    private GameObject m_CanvasPause;
+
     private bool m_IsPaused = false;
+
+    [SerializeField]
+    private ScoreManager m_scoreManager;
+
+    [SerializeField]
+    private Text m_GameOverScoreText;
+    [SerializeField]
+    private Text m_GameOverBestScoreText;
 
 
     void Start()
     {
+        m_Board.DrawEmptyCells();
+
         StartGame();
     }
 
     private void StartGame()
     {
-        m_Board.DrawEmptyCells();
-
         Shuffle();
 
         m_Board.VerifyGridCombination(true);
@@ -59,7 +77,7 @@ public class GameController : MonoBehaviour
             for (int j = 0; j < m_Board.m_height - m_Board.m_header; j++)
             {
                 m_Board.ErasePosition(i, j);
-                Piece piece = m_Spawner.SpawnAtPosition(new Vector3(i, j, 0));
+                Piece piece = m_Spawner.SpawnAtPosition(new Vector3(i, j, m_Board.m_posz));
                 m_Board.StorePieceInGrid(piece);
             }
     }
@@ -137,20 +155,55 @@ public class GameController : MonoBehaviour
     private void GameOver()
     {
         m_CanvasGameOver.SetActive(true);
+        m_GameOverScoreText.text = m_scoreManager.padZero(m_scoreManager.m_score);
+        if (PlayerPrefs.HasKey(BEST_SCORE_KEY))
+        {
+            m_GameOverBestScoreText.text = m_scoreManager.padZero(PlayerPrefs.GetInt(BEST_SCORE_KEY));
+
+            if (PlayerPrefs.GetInt(BEST_SCORE_KEY) < m_scoreManager.m_score)
+
+                PlayerPrefs.SetInt(BEST_SCORE_KEY, m_scoreManager.m_score);
+        }
+        else
+            PlayerPrefs.SetInt(BEST_SCORE_KEY, m_scoreManager.m_score);
+        
+
+        m_CanvasOverlay.SetActive(false);
         TogglePause();
     }
 
     public void TogglePause()
     {
+        m_Board.SetBoardActive(!m_IsPaused);
         m_IsPaused = !m_IsPaused;
+        
+        Debug.Log("ispaused: " + m_IsPaused);
     }
 
     public void Restart()
     {
         TogglePause();
-        
-        StartGame();
 
+        m_CanvasGameOver.SetActive(m_IsPaused);
+
+        m_CanvasOverlay.SetActive(!m_IsPaused);
+
+        m_Board.SetBoardActive(!m_IsPaused);
+
+        m_scoreManager.Reset();
+
+        StartGame();
+    }
+
+    public void Pause()
+    {
+        TogglePause();
+
+        m_CanvasPause.SetActive(m_IsPaused);
+
+        m_CanvasOverlay.SetActive(!m_IsPaused);
+
+        m_Board.SetBoardActive(!m_IsPaused);
     }
 
 

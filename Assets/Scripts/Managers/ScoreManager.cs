@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    int m_score = 0;
+    public int m_score = 0;
 
     const int m_minPieces = 3;
     const int m_maxPieces = 5;
@@ -38,7 +38,7 @@ public class ScoreManager : MonoBehaviour
                 break;
         }
         m_score += ptsEarned;
-        Debug.Log("Ganhou: " + ptsEarned.ToString() + " pts");
+        Debug.Log("ganhou: " + ptsEarned);
         UpdateInterface();
     }
 
@@ -53,7 +53,7 @@ public class ScoreManager : MonoBehaviour
         UpdateInterface();
     }
 
-    string padZero(int n, int padDigits)
+    public string padZero(int n, int padDigits = 5)
     {
         string str = n.ToString();
 
