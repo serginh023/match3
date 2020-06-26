@@ -230,6 +230,11 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
+    public void PlayButtonSound()
+    {
+        AudioSource.PlayClipAtPoint(m_clipSelectPiece, Camera.main.transform.position);
+    }
+
 
 
     private void OnEnable()

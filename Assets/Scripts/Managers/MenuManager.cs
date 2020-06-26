@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
+    [SerializeField]
+    private AudioClip m_clipSelectPiece;
     public void StartGame()
     {
         SceneManager.LoadScene(1);
@@ -18,6 +20,11 @@ public class MenuManager : MonoBehaviour
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    public void PlaySound()
+    {
+        AudioSource.PlayClipAtPoint(m_clipSelectPiece, Camera.main.transform.position);
     }
 
 }

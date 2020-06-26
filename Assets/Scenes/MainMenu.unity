@@ -269,7 +269,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 982b15000ca5e714ba9aed6d4a594236, type: 3}
-    m_FontSize: 72
+    m_FontSize: 60
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 6
@@ -2120,7 +2120,7 @@ RectTransform:
   m_GameObject: {fileID: 1889538607}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1152996356}
   m_Father: {fileID: 395866071}
@@ -2143,6 +2143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2502b2624c57c428e63631c746fd82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_clipSelectPiece: {fileID: 8300000, guid: 1a2903f4c36d56f45b96cea58daa0c5b, type: 3}
 --- !u!114 &1889538610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2189,6 +2190,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1889538609}
         m_MethodName: ExitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1889538609}
+        m_MethodName: PlaySound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2399,7 +2411,7 @@ RectTransform:
   m_GameObject: {fileID: 2044001006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1568176365}
   m_Father: {fileID: 395866071}
@@ -2454,6 +2466,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 2044001011}
+        m_MethodName: PlaySound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2044001011}
         m_MethodName: StartGame
         m_Mode: 1
@@ -2514,6 +2537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d2502b2624c57c428e63631c746fd82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_clipSelectPiece: {fileID: 8300000, guid: 1a2903f4c36d56f45b96cea58daa0c5b, type: 3}
 --- !u!1 &2107723107
 GameObject:
   m_ObjectHideFlags: 0
