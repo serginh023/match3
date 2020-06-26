@@ -13,6 +13,10 @@ public class ScoreManager : MonoBehaviour
     public Text m_scoreText;
     public Text m_LetsGoText;
 
+    public int ptsEarned = 0;
+
+    public LevelManager m_levelManager;
+
     private void Start()
     {
         UpdateInterface();
@@ -22,7 +26,7 @@ public class ScoreManager : MonoBehaviour
     {
         points = Mathf.Clamp(points, m_minPieces, m_maxPieces);
 
-        int ptsEarned = 0;
+        ptsEarned = 0;
         switch (points)
         {
             case 3:
@@ -38,7 +42,7 @@ public class ScoreManager : MonoBehaviour
                 break;
         }
         m_score += ptsEarned;
-        Debug.Log("ganhou: " + ptsEarned);
+        m_levelManager.XpUp(ptsEarned);
         UpdateInterface();
     }
 
@@ -50,6 +54,7 @@ public class ScoreManager : MonoBehaviour
     public void Reset()
     {
         m_score = 0;
+        m_levelManager.Reset();
         UpdateInterface();
     }
 

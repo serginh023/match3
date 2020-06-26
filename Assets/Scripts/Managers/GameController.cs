@@ -118,7 +118,10 @@ public class GameController : MonoBehaviour
         }
 
         while (m_Board.m_won)
+        {
             m_Board.VerifyGridCombination(true);
+        }
+            
 
         //O audio de 'clear' não está aqui pois como não tem animação de clear vai ficar um áudio em cima do outro e não fica bom
         m_Board.VerifyAnyChance();
