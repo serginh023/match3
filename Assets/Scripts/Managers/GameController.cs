@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
@@ -123,9 +124,7 @@ public class GameController : MonoBehaviour
         m_Board.VerifyAnyChance();
 
         if (!m_Board.m_hasValidChance)
-        {
             GameOver();
-        }
 
     }
 
@@ -167,7 +166,6 @@ public class GameController : MonoBehaviour
         else
             PlayerPrefs.SetInt(BEST_SCORE_KEY, m_scoreManager.m_score);
         
-
         m_CanvasOverlay.SetActive(false);
         TogglePause();
     }
@@ -176,8 +174,6 @@ public class GameController : MonoBehaviour
     {
         m_Board.SetBoardActive(!m_IsPaused);
         m_IsPaused = !m_IsPaused;
-        
-        Debug.Log("ispaused: " + m_IsPaused);
     }
 
     public void Restart()
@@ -224,6 +220,11 @@ public class GameController : MonoBehaviour
         m_CanvasGameOver.SetActive(m_IsPaused);
 
         m_Timer.ResumeTimer();
+    }
+
+    public void OpenMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
 
