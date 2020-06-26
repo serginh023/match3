@@ -5,7 +5,7 @@ using UnityEngine;
 public class ObjectFlying : MonoBehaviour
 {
     private Object[] textures;
-    private float time = 6f;
+    private float time = 17f;
     public Vector3 direction;
 
 

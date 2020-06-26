@@ -9,7 +9,7 @@ public class SpawnObjectsFlying : MonoBehaviour
 
     void Start()
     {
-        InvokeRepeating("LaunchProjectile", 1.0f, Random.Range( 1.5f, 2f));
+        InvokeRepeating("LaunchProjectile", 0f, Random.Range( 1.75f, 2.5f));
     }
 
     public void LaunchProjectile()
