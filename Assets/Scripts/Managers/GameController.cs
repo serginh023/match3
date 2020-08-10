@@ -47,6 +47,13 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private Text m_GameOverBestScoreText;
 
+    [Range(0, 1)]
+    public float TestSolutionsFloat = .5f;
+
+    public Object GameObjectTestSolutions;
+
+
+
 
     void Start()
     {
