@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.Experimental.TerrainAPI;
 
 [CustomEditor(typeof(GameController))]
 public class GameControllerEditor : Editor
