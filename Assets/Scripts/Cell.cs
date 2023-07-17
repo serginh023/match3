@@ -11,7 +11,7 @@ public class Cell : MonoBehaviour
         transform.localPosition = newPos;
     }
 
-    private void SetButtonPosition()
+    public void RefreshButtonPosition()
     {
         button.transform.localPosition = Vector3.zero;
     }
