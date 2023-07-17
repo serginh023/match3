@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class ButtonCandy : MonoBehaviour
@@ -24,8 +26,23 @@ public class ButtonCandy : MonoBehaviour
         audio = clip;
     }
 
-    public void NavigateToPosition(Vector3 newPosition)
+    public void NavigateToPosition(Vector2 newPosition)
     {
-        
+        StartCoroutine(NavigationToPosition(newPosition, 1f, null));
+    }
+
+    private IEnumerator NavigationToPosition(Vector2 targetPosition, float duration, Action callback)
+    {
+        float time = 0f;
+        Vector2 start = transform.position;
+        while(time < duration)
+        {
+            transform.position = Vector3.Lerp(start, targetPosition, time / duration);
+            time += Time.deltaTime;
+        }
+
+        yield return null;
+
+        callback?.Invoke();
     }
 }
