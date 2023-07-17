@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92a7d13e14ef15d4c913247ca7a685fc, type: 3}
+  m_Name: ButtonCandyBread
+  m_EditorClassIdentifier: 
+  icon: {fileID: 21300000, guid: b013c07f054681a458f7497ef37c72fd, type: 3}
+  name: Bread
