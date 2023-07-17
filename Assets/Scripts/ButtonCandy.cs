@@ -7,6 +7,7 @@ public class ButtonCandy : MonoBehaviour
     [SerializeField] private Sprite icon;
     [SerializeField] private AudioClip audio;
     [SerializeField] private GameObject hover;
+    [SerializeField] private SpriteRenderer renderer;
 
     private void OnClick()
     {
@@ -19,6 +20,7 @@ public class ButtonCandy : MonoBehaviour
     public void SetIcon(Sprite newSprite)
     {
         icon = newSprite;
+        renderer.sprite = icon;
     }
 
     public void SetAudio(AudioClip clip)
