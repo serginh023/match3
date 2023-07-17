@@ -157,7 +157,9 @@ MonoBehaviour:
   buttonCandy: {fileID: 132521747571403334, guid: 2ccf27f9346384144a3271d6508b17ad,
     type: 3}
   cell: {fileID: 3548684180764773178, guid: ded28a404e0c5d342bf1e315d253a19c, type: 3}
-  cellList: []
+  buttonCandyScriptable: {fileID: 11400000, guid: 7d8314860099a914da3bf6a7c25843cd,
+    type: 2}
+  testeSprite: {fileID: 0}
 --- !u!4 &1502099065
 Transform:
   m_ObjectHideFlags: 0
