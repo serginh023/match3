@@ -7,7 +7,7 @@ public class Pool : MonoBehaviour
     private List<GameObject> list = new List<GameObject>();
     private int total = 30;
 
-    void Start()
+    private void Start()
     {
         StartPool();
     }
@@ -33,8 +33,9 @@ public class Pool : MonoBehaviour
         {
             Expandlist();
         }
-        
-        return list[list.Count-1];
+        GameObject aux = list[list.Count-1];
+        list.RemoveAt(list.Count-1);
+        return aux;
     }
     
     public void Retrieve(GameObject item)
