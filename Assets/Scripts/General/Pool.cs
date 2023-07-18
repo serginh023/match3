@@ -4,7 +4,7 @@ using UnityEngine;
 public class Pool : MonoBehaviour
 {
     [SerializeField] private GameObject jewel;
-    private List<GameObject> list;
+    private List<GameObject> list = new List<GameObject>();
     private int total = 10;
 
     void Start()
@@ -17,6 +17,7 @@ public class Pool : MonoBehaviour
         for(int i = 0; i < total; i++)
         {
             GameObject go = Instantiate(jewel, Vector3.zero, Quaternion.identity);
+            go.transform.SetParent(transform);
             list.Add(go);
         }
     }
