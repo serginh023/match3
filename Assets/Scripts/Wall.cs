@@ -10,6 +10,7 @@ public class Wall : MonoBehaviour
     [SerializeField] private Dictionary<Vector2Int, Cell> cellList = new Dictionary<Vector2Int, Cell>();
     [SerializeField] private ButtonCandyScriptable buttonCandyScriptable;
     [SerializeField] private Sprite testeSprite;
+    [SerializeField] private Pool pool;
 
     private void Start()
     {   
@@ -26,7 +27,6 @@ public class Wall : MonoBehaviour
                 Cell NewCell = Instantiate(cell);
                 NewCell.transform.SetParent(transform);
                 NewCell.SetPosition(new Vector3(i, j, 0));
-                // NewCell.transform.localPosition = new Vector3(0, 0, 0);
                 cellList.Add(new Vector2Int(i, j), NewCell);
             }
         }
@@ -46,13 +46,16 @@ public class Wall : MonoBehaviour
     private void PopulateCells()
     {
         for(int i = 0; i < rows; i++)
+        {
              for(int j = 0; j < collumns; j++)
              {
-                ButtonCandy go = Instantiate(buttonCandy);
-                go.SetIcon(buttonCandyScriptable.icon);
-                go.name = buttonCandyScriptable.name;
-                PutNewButtonIntoWall(new Vector2Int(i, j), go);
+                var go = pool.Get();
+                var bc = go.GetComponent<ButtonCandy>();
+                bc.SetIcon(buttonCandyScriptable.icon);
+                bc.name = buttonCandyScriptable.name;
+                PutNewButtonIntoWall(new Vector2Int(i, j), bc);
              }
+        }
     }
     
 

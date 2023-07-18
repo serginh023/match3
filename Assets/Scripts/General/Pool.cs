@@ -5,7 +5,7 @@ public class Pool : MonoBehaviour
 {
     [SerializeField] private GameObject jewel;
     private List<GameObject> list = new List<GameObject>();
-    private int total = 10;
+    private int total = 30;
 
     void Start()
     {
@@ -16,10 +16,15 @@ public class Pool : MonoBehaviour
     {
         for(int i = 0; i < total; i++)
         {
-            GameObject go = Instantiate(jewel, Vector3.zero, Quaternion.identity);
-            go.transform.SetParent(transform);
-            list.Add(go);
+            CreateObject();
         }
+    }
+
+    private void CreateObject()
+    {
+        GameObject go = Instantiate(jewel, Vector3.zero, Quaternion.identity);
+        go.transform.SetParent(transform);
+        list.Add(go);
     }
 
     public GameObject Get()
@@ -30,7 +35,6 @@ public class Pool : MonoBehaviour
         }
         
         return list[list.Count-1];
-
     }
     
     public void Retrieve(GameObject item)
@@ -40,8 +44,7 @@ public class Pool : MonoBehaviour
 
     private void Expandlist()
     {
-        GameObject go = Instantiate(jewel, Vector3.zero, Quaternion.identity);
-        list.Add(go);
+        CreateObject();
     }
 
     private void RemoveAll()

@@ -14,7 +14,7 @@ public class Cell : MonoBehaviour
     public void RefreshButtonPosition()
     {
         button.transform.localPosition = Vector3.zero;
-            Debug.Log(button.transform.localPosition + "-->" + transform.position);
-
     }
+    
+       
 }
