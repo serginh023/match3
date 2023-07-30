@@ -5,10 +5,9 @@ public class Wall : MonoBehaviour
 {
     [SerializeField] private int collumns;
     [SerializeField] private int rows;
-    [SerializeField] private ButtonCandy buttonCandy;
     [SerializeField] private Cell cell;
     [SerializeField] private Dictionary<Vector2Int, Cell> cellList = new Dictionary<Vector2Int, Cell>();
-    [SerializeField] private ButtonCandyScriptable buttonCandyScriptable;
+    [SerializeField] private List<ButtonCandyScriptable> buttonCandyScriptableList;
     [SerializeField] private Sprite testeSprite;
     [SerializeField] private Pool pool;
 
@@ -45,12 +44,15 @@ public class Wall : MonoBehaviour
 
     private void PopulateCells()
     {
+        int scriptable = 0;
+        ButtonCandyScriptable buttonCandyScriptable;
         for(int i = 0; i < rows; i++)
         {
              for(int j = 0; j < collumns; j++)
              {
                 var go = pool.Get();
                 var bc = go.GetComponent<ButtonCandy>();
+                buttonCandyScriptable = buttonCandyScriptableList[Random.Range(0, buttonCandyScriptableList.Count - 1)];
                 bc.SetIcon(buttonCandyScriptable.icon);
                 bc.name = buttonCandyScriptable.name;
                 PutNewButtonIntoWall(new Vector2Int(i, j), bc);
