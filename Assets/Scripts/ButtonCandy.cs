@@ -5,27 +5,34 @@ using UnityEngine;
 public class ButtonCandy : MonoBehaviour
 {
     [SerializeField] private Sprite icon;
-    [SerializeField] private AudioClip audio;
+    [SerializeField] private AudioClip clip;
     [SerializeField] private GameObject hover;
-    [SerializeField] private SpriteRenderer renderer;
+    [SerializeField] private SpriteRenderer rend;
+    [SerializeField] private AudioSource audioSource;
 
     private void OnClick()
     {
         /*
-        play audio
         enable hover
         */
+        PlayAudio();
     }
 
     public void SetIcon(Sprite newSprite)
     {
         icon = newSprite;
-        renderer.sprite = icon;
+        rend.sprite = icon;
     }
 
     public void SetAudio(AudioClip clip)
     {
-        audio = clip;
+        this.clip = clip;
+    }
+    
+    public void PlayAudio()
+    {
+        audioSource.clip = clip;
+        audioSource.Play();
     }
 
     public void NavigateToPosition(Vector2 newPosition)

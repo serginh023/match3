@@ -245,7 +245,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 495825272}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.63421303, y: -0.0047645867, z: -0.51218057}
+  m_LocalPosition: {x: 0.63421303, y: -0.0047645867, z: 1}
   m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -283,11 +283,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collumns: 5
   rows: 6
-  buttonCandy: {fileID: 132521747571403334, guid: 2ccf27f9346384144a3271d6508b17ad,
-    type: 3}
   cell: {fileID: 3548684180764773178, guid: ded28a404e0c5d342bf1e315d253a19c, type: 3}
-  buttonCandyScriptable: {fileID: 11400000, guid: 7d8314860099a914da3bf6a7c25843cd,
-    type: 2}
+  buttonCandyScriptableList:
+  - {fileID: 11400000, guid: 7d8314860099a914da3bf6a7c25843cd, type: 2}
+  - {fileID: 11400000, guid: 189318ba6f2491246b3a2cbd9ac1761b, type: 2}
+  - {fileID: 11400000, guid: 0038ac7c3c765c74da60372550586c97, type: 2}
+  - {fileID: 11400000, guid: d39c614049e068f4f872992f29f6a7ff, type: 2}
+  - {fileID: 11400000, guid: 812afae5848f46b4da75af9ac6f80759, type: 2}
+  - {fileID: 11400000, guid: 905c875bb1d39a847be5db092de4b8c5, type: 2}
+  - {fileID: 11400000, guid: 80c16cc7510ed454dbaee5f9cf3322c7, type: 2}
   testeSprite: {fileID: 0}
   pool: {fileID: 131603819}
 --- !u!4 &1502099065
