@@ -10,6 +10,11 @@ public class ButtonCandy : MonoBehaviour
     [SerializeField] private SpriteRenderer rend;
     [SerializeField] private AudioSource audioSource;
 
+    public string Name
+    {
+        get => icon.name;
+    }
+
     private void OnClick()
     {
         /*
