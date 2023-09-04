@@ -4,7 +4,7 @@ public class Cell : MonoBehaviour
 {
     private ButtonCandy button;
     public ButtonCandy Button { get => button; set => button = value; }
-    private Vector2Int coord = new Vector2Int();
+    private Vector2Int coord;
 
     public void SetPosition(Vector3 newPos)
     {
@@ -15,5 +15,10 @@ public class Cell : MonoBehaviour
     public void RefreshButtonPosition()
     {
         button.transform.localPosition = Vector3.zero;
+    }
+
+    public void RemoveButton()
+    {
+        button = null;
     }
 }

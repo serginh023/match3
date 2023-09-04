@@ -7,22 +7,20 @@ public class ButtonCandy : MonoBehaviour
     [SerializeField] private Sprite icon;
     [SerializeField] private AudioClip clip;
     [SerializeField] private GameObject hover;
+    [SerializeField] private Collider collider;
     [SerializeField] private SpriteRenderer rend;
     [SerializeField] private AudioSource audioSource;
+    
+    public string Name => icon.name;
 
-    public string Name
+    private void VerifyClick(RaycastHit hit, Action callback)
     {
-        get => icon.name;
-    }
-
-    private void OnClick()
-    {
-        /*
-        enable hover
-        */
+        if (hit.collider != collider) return;
+        ToogleHover();
         PlayAudio();
+        callback.Invoke();
     }
-
+    
     public void SetIcon(Sprite newSprite)
     {
         icon = newSprite;
@@ -54,9 +52,13 @@ public class ButtonCandy : MonoBehaviour
             transform.position = Vector3.Lerp(start, targetPosition, time / duration);
             time += Time.deltaTime;
         }
-
         yield return null;
-
         callback?.Invoke();
+    }
+    
+    private void ToogleHover()
+    {
+        var status = hover.activeInHierarchy;
+        hover.SetActive(!status);
     }
 }

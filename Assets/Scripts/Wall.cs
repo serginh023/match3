@@ -1,20 +1,17 @@
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-enum Direction
-{
-    VERTICAL,
-    HORIZONTAL
-}
 public class Wall : MonoBehaviour
 {
-    [SerializeField] private int collumns;
     [SerializeField] private int rows;
-    [SerializeField] private Cell cellPrefab;
-    [SerializeField] private Dictionary<Vector2Int, Cell> cellList = new Dictionary<Vector2Int, Cell>();
-    [SerializeField] private List<ButtonCandyScriptable> buttonCandyScriptableList;
-    [SerializeField] private Sprite testeSprite;
+    [SerializeField] private int collumns;
     [SerializeField] private Pool pool;
+    [SerializeField] private Cell cellPrefab;
+    [SerializeField] private List<ButtonCandyScriptable> scriptableList;
+
+    private Dictionary<Vector2Int, Cell> cellList = new();
 
     private void Start()
     {   
@@ -24,14 +21,13 @@ public class Wall : MonoBehaviour
 
     private void PopulateWall()
     {
-        for(int i = 0; i < rows; i++)
+        for(var i = 0; i < rows; i++)
         {
-            for(int j = 0; j < collumns; j++)
+            for(var j = 0; j < collumns; j++)
             {
-                Cell NewCell = Instantiate(cellPrefab);
-                NewCell.transform.SetParent(transform);
-                NewCell.SetPosition(new Vector3(i, j, 0));
-                cellList.Add(new Vector2Int(i, j), NewCell);
+                var newCell = Instantiate(cellPrefab, transform);
+                newCell.SetPosition(new Vector3(i, j, 0));
+                cellList.Add(new Vector2Int(i, j), newCell);
             }
         }
     }
@@ -39,35 +35,33 @@ public class Wall : MonoBehaviour
     private void PutNewButtonIntoWall(Vector2Int position, ButtonCandy button)
     {
         Cell cell;
-        if(cellList.TryGetValue(position, out cell))
-        {
-            cell.Button = button;
-            button.transform.SetParent(cell.transform);
-            cell.RefreshButtonPosition();
-        }
+        if (!cellList.TryGetValue(position, out cell)) return;
+        cell.Button = button;
+        button.transform.SetParent(cell.transform);
+        cell.RefreshButtonPosition();
     }
 
     private void PopulateCells()
     {
-        ButtonCandyScriptable buttonCandyScriptable;
-        for(int i = 0; i < rows; i++)
+        ButtonCandyScriptable scriptable;
+        for(var i = 0; i < rows; i++)
         {
-             for(int j = 0; j < collumns; j++)
+             for(var j = 0; j < collumns; j++)
              {
                 var go = pool.Get();
-                var bc = go.GetComponent<ButtonCandy>();
-                buttonCandyScriptable = buttonCandyScriptableList[Random.Range(0, buttonCandyScriptableList.Count - 1)];
-                bc.SetIcon(buttonCandyScriptable.icon);
-                bc.name = buttonCandyScriptable.name;
-                PutNewButtonIntoWall(new Vector2Int(i, j), bc);
+                var button = go.GetComponent<ButtonCandy>();
+                scriptable = scriptableList[Random.Range(0, scriptableList.Count - 1)];
+                button.SetIcon(scriptable.icon);
+                button.name = scriptable.name;
+                PutNewButtonIntoWall(new Vector2Int(i, j), button);
              }
         }
     }
 
     private void FindMatch()
     {
-        int i = 0;
-        int j = 0;
+        var i = 0;
+        var j = 0;
         var pos = new Vector2Int();
         
         //Verify horizontal
@@ -82,9 +76,10 @@ public class Wall : MonoBehaviour
                     if (VerifyHorizontal(pos, cell.Button.name))
                     {
                         //Done good!
-                        //1.Remove buttons (VFX too)
-                        //2.Add some score (VFX too)
-                        //3.Call new buttons (Drop down spawn)
+                        //TODO 1.Remove buttons (VFX too)
+                        RemoveButton(cell);
+                        //TODO 2.Add some score (VFX too)
+                        //TODO 3.Call new buttons (Drop down spawn)
                         i = 0;
                         j = 0;
                     }
@@ -109,9 +104,10 @@ public class Wall : MonoBehaviour
                     if (VerifyVertical(pos, cell.Button.name))
                     {
                         //Done good!
-                        //1.Remove buttons (VFX too)
-                        //2.Add some score (VFX too)
-                        //3.Call new buttons (Drop down spawn)
+                        //TODO 1.Remove buttons (VFX too)
+                        RemoveButton(cell);
+                        //TODO 2.Add some score (VFX too)
+                        //TODO 3.Call new buttons (Drop down spawn)
                         i = 0;
                         j = 0;
                     }
@@ -134,8 +130,7 @@ public class Wall : MonoBehaviour
         {
             if (cellList.TryGetValue(pos2, out var aux2))
             {
-                if (aux.Button.name == name
-                    && aux2.Button.name == name)
+                if (aux.Button.name == name && aux2.Button.name == name)
                 {
                     return true;
                 }
@@ -162,8 +157,7 @@ public class Wall : MonoBehaviour
         {
             if (cellList.TryGetValue(pos2, out var aux2))
             {
-                if (aux.Button.name == name
-                    && aux2.Button.name == name)
+                if (aux.Button.name == name && aux2.Button.name == name)
                 {
                     return true;
                 }
@@ -180,5 +174,10 @@ public class Wall : MonoBehaviour
         return false;
     }
 
-
+    private void RemoveButton(Cell cell)
+    {
+        pool.Retrieve(cell.Button.gameObject);
+        cell.RemoveButton();
+    }
+    
 }
