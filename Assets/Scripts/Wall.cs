@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Wall : MonoBehaviour
 {
@@ -12,11 +10,26 @@ public class Wall : MonoBehaviour
     [SerializeField] private List<ButtonCandyScriptable> scriptableList;
 
     private Dictionary<Vector2Int, Cell> cellList = new();
+    private Ray ray;
 
     private void Start()
-    {   
+    {
         PopulateWall();
         PopulateCells();
+    }
+
+    private void Update()
+    {
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out var hit))
+        {
+            foreach (var cell in cellList)
+            {
+                cell.Value.VerifyClick(hit);
+            }
+        }
     }
 
     private void PopulateWall()
@@ -52,7 +65,8 @@ public class Wall : MonoBehaviour
                 var button = go.GetComponent<ButtonCandy>();
                 scriptable = scriptableList[Random.Range(0, scriptableList.Count - 1)];
                 button.SetIcon(scriptable.icon);
-                button.name = scriptable.name;
+                button.name = scriptable.candyName;
+                button.transform.name = scriptable.name;
                 PutNewButtonIntoWall(new Vector2Int(i, j), button);
              }
         }
@@ -176,8 +190,8 @@ public class Wall : MonoBehaviour
 
     private void RemoveButton(Cell cell)
     {
-        pool.Retrieve(cell.Button.gameObject);
-        cell.RemoveButton();
+        // pool.Retrieve(cell.Button.gameObject);
+        // cell.RemoveButton();
     }
     
 }

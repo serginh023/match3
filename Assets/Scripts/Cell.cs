@@ -21,4 +21,9 @@ public class Cell : MonoBehaviour
     {
         button = null;
     }
+
+    public void VerifyClick(RaycastHit hit)
+    {
+        button.VerifyClick(hit);
+    }
 }

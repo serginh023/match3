@@ -14,7 +14,7 @@ public class Pool : MonoBehaviour
 
     private void StartPool()
     {
-        for(int i = 0; i < Total; i++)
+        for(var i = 0; i < Total; i++)
         {
             CreateObject();
         }
