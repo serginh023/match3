@@ -1,23 +1,34 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ButtonCandy : MonoBehaviour
 {
     [SerializeField] private Sprite icon;
     [SerializeField] private AudioClip clip;
-    [SerializeField] private GameObject hover;
+    [SerializeField] private SpriteRenderer hovering;
     [SerializeField] private BoxCollider coll;
     [SerializeField] private SpriteRenderer rend;
     [SerializeField] private AudioSource audioSource;
     
     public string Name => icon.name;
 
-    public void VerifyClick(RaycastHit hit)
+    public bool Hover
+    {
+        set
+        {
+            hovering.enabled = value;
+        }
+    }
+
+    public void VerifyClick(RaycastHit hit, Cell cell, Action<Cell> callback)
     {
         if (hit.collider != coll) return;
-        // ToogleHover();
-        PlayAudio();
+        coll.enabled = false;
+        callback?.Invoke(cell);
+        Debug.Log("Clicado" + icon.name);
+        // PlayAudio();
     }
     
     public void SetIcon(Sprite newSprite)
@@ -29,7 +40,7 @@ public class ButtonCandy : MonoBehaviour
 
     public void SetAudio(AudioClip audioClip)
     {
-        this.clip = audioClip;
+        clip = audioClip;
     }
     
     private void PlayAudio()
@@ -55,16 +66,14 @@ public class ButtonCandy : MonoBehaviour
         yield return null;
         callback?.Invoke();
     }
-    
-    private void ToogleHover()
-    {
-        var status = hover.activeInHierarchy;
-        hover.SetActive(!status);
-    }
 
     private void FitColliderToImage()
     {
-         coll.size = new Vector3(icon.bounds.size.x, icon.bounds.size.y);
-         
+         coll.size = new Vector2(icon.bounds.size.x, icon.bounds.size.y);
+    }
+
+    public void SetCollider(bool enable)
+    {
+        coll.enabled = enable;
     }
 }

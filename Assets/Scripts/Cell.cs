@@ -1,9 +1,19 @@
+using System;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
     private ButtonCandy button;
-    public ButtonCandy Button { get => button; set => button = value; }
+    public ButtonCandy Button 
+    { 
+        get => button; 
+        set 
+        {
+            button = value;
+            button.transform.SetParent(transform);
+            RefreshButtonPosition();
+        } 
+    }
     private Vector2Int coord;
 
     public void SetPosition(Vector3 newPos)
@@ -14,6 +24,7 @@ public class Cell : MonoBehaviour
 
     public void RefreshButtonPosition()
     {
+        //button.transform.position = transform.position;
         button.transform.localPosition = Vector3.zero;
     }
 
@@ -22,8 +33,18 @@ public class Cell : MonoBehaviour
         button = null;
     }
 
-    public void VerifyClick(RaycastHit hit)
+    public void VerifyClick(RaycastHit hit, Action<Cell> callback)
     {
-        button.VerifyClick(hit);
+        button.VerifyClick(hit, this, callback);
+    }
+
+    public void SetHover(bool hover)
+    {
+        button.Hover = hover;
+    }
+
+    public void SetCollider(bool enable)
+    {
+        button.SetCollider(enable);
     }
 }

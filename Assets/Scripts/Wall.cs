@@ -1,35 +1,29 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class Wall : MonoBehaviour
 {
     [SerializeField] private int rows;
     [SerializeField] private int collumns;
     [SerializeField] private Pool pool;
+    [SerializeField] private Camera camera;
     [SerializeField] private Cell cellPrefab;
     [SerializeField] private List<ButtonCandyScriptable> scriptableList;
-
     private Dictionary<Vector2Int, Cell> cellList = new();
+    private Coroutine current;
+    private bool _anySelected = false;
+    private Cell selected1;
+    private Cell selected2;
     private Ray ray;
 
     private void Start()
     {
         PopulateWall();
         PopulateCells();
-    }
-
-    private void Update()
-    {
-        if (!Input.GetMouseButtonDown(0)) return;
-
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out var hit))
-        {
-            foreach (var cell in cellList)
-            {
-                cell.Value.VerifyClick(hit);
-            }
-        }
     }
 
     private void PopulateWall()
@@ -72,7 +66,20 @@ public class Wall : MonoBehaviour
         }
     }
 
-    private void FindMatch()
+    public void VerifyRay()
+    {
+        ray = camera.ScreenPointToRay(Mouse.current.position.value);
+        if (Physics.Raycast(ray, out var hit))
+        {
+            foreach (var pair in cellList)
+            {
+                var cell = pair.Value;
+                cell.VerifyClick(hit, VerifySelectedCells);
+            }
+        }
+    }
+
+    private bool FindMatch()
     {
         var i = 0;
         var j = 0;
@@ -96,6 +103,7 @@ public class Wall : MonoBehaviour
                         //TODO 3.Call new buttons (Drop down spawn)
                         i = 0;
                         j = 0;
+                        return true;
                     }
                     else
                     {
@@ -193,5 +201,66 @@ public class Wall : MonoBehaviour
         // pool.Retrieve(cell.Button.gameObject);
         // cell.RemoveButton();
     }
-    
+
+    private void VerifySelectedCells(Cell cell)
+    {
+        if (!_anySelected)
+        {
+            selected1 = cell;
+            _anySelected = true;
+            selected1.SetHover(true);
+        }
+        else
+        {
+            selected2 = cell;
+            if (!IsPossibleDistance(selected1, selected2))
+            {
+                _anySelected = false;
+                RemoveSelectedVariables();
+            }
+            else
+            {
+                _anySelected = false;
+                current = StartCoroutine(ChangeButtonsWithWait(ChangeButtons));
+                //FindMatch();
+            }
+        }
+    }
+
+    private void ChangeButtons(Cell cell1, Cell cell2)
+    {
+        (cell1.Button, cell2.Button) = (cell2.Button, cell1.Button);
+        cell1.RefreshButtonPosition();
+        cell2.RefreshButtonPosition();
+        ResetVariables();
+    }
+
+    private void ResetVariables()
+    {
+        selected1.SetHover(false);
+        selected2.SetHover(false);
+        selected1.SetCollider(true);
+        selected2.SetCollider(true);
+        RemoveSelectedVariables();
+    }
+
+    private bool IsPossibleDistance(Cell cell1, Cell cell2)
+    {
+        var distance = Vector3.Distance(cell1.transform.position, cell2.transform.position);
+        return ( distance == 1);
+    }
+
+    private void RemoveSelectedVariables()
+    {
+        selected1.SetHover(false);
+        selected2.SetHover(false);
+        selected1 = default;
+        selected2 = default;
+    }
+
+    private IEnumerator ChangeButtonsWithWait(Action<Cell, Cell> callback)
+    {
+        yield return new WaitForSeconds(.1f);
+        callback?.Invoke(selected1, selected2);
+    }
 }
