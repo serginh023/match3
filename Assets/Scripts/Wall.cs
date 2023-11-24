@@ -10,12 +10,12 @@ public class Wall : MonoBehaviour
     [SerializeField] private int rows;
     [SerializeField] private int collumns;
     [SerializeField] private Pool pool;
-    [SerializeField] private Camera camera;
     [SerializeField] private Cell cellPrefab;
+    [SerializeField] private Camera camera;
     [SerializeField] private List<ButtonCandyScriptable> scriptableList;
     private Dictionary<Vector2Int, Cell> cellList = new();
-    private Coroutine current;
-    private bool _anySelected = false;
+    
+    private bool _anySelected;
     private Cell selected1;
     private Cell selected2;
     private Ray ray;
@@ -51,18 +51,27 @@ public class Wall : MonoBehaviour
     private void PopulateCells()
     {
         ButtonCandyScriptable scriptable;
-        for(var i = 0; i < rows; i++)
+        var ok = true;
+        while (ok)
         {
-             for(var j = 0; j < collumns; j++)
-             {
-                var go = pool.Get();
-                var button = go.GetComponent<ButtonCandy>();
-                scriptable = scriptableList[Random.Range(0, scriptableList.Count - 1)];
-                button.SetIcon(scriptable.icon);
-                button.name = scriptable.candyName;
-                button.transform.name = scriptable.name;
-                PutNewButtonIntoWall(new Vector2Int(i, j), button);
-             }
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < collumns; j++)
+                {
+                    var go = pool.Get();
+                    var button = go.GetComponent<ButtonCandy>();
+                    scriptable = scriptableList[Random.Range(0, scriptableList.Count - 1)];
+                    button.SetIcon(scriptable.icon);
+                    button.name = scriptable.candyName;
+                    button.transform.name = scriptable.name;
+                    PutNewButtonIntoWall(new Vector2Int(i, j), button);
+                }
+            }
+            ok = FindMatch();
+            if(ok)
+            {
+                RemoveAllButtons();
+            }
         }
     }
 
@@ -84,63 +93,59 @@ public class Wall : MonoBehaviour
         var i = 0;
         var j = 0;
         var pos = new Vector2Int();
-        
+
         //Verify horizontal
-        while (i < rows)
+        while (i < rows - 2)
         {
             while (j < collumns)
             {
                 pos = new Vector2Int(i, j);
-                Cell cell;
-                if (cellList.TryGetValue(pos, out cell))
+                if (cellList.TryGetValue(pos, out var cell))
                 {
                     if (VerifyHorizontal(pos, cell.Button.name))
                     {
                         //Done good!
                         //TODO 1.Remove buttons (VFX too)
-                        RemoveButton(cell);
+                        // RemoveButton(cell);
                         //TODO 2.Add some score (VFX too)
                         //TODO 3.Call new buttons (Drop down spawn)
-                        i = 0;
-                        j = 0;
                         return true;
                     }
-                    else
-                    {
-                        j++;
-                    }
                 }
+                j++;
             }
             i++;
+            j = 0;
         }
+        
+        i = 0;
+        j = 0;
         
         //Verify vertical
         while (i < rows)
         {
-            while (j < collumns)
+            while (j < collumns - 2)
             {
                 pos = new Vector2Int(i, j);
-                Cell cell;
-                if (cellList.TryGetValue(pos, out cell))
+                if (cellList.TryGetValue(pos, out var cell))
                 {
                     if (VerifyVertical(pos, cell.Button.name))
                     {
                         //Done good!
                         //TODO 1.Remove buttons (VFX too)
-                        RemoveButton(cell);
+                        // RemoveButton(cell);
                         //TODO 2.Add some score (VFX too)
                         //TODO 3.Call new buttons (Drop down spawn)
-                        i = 0;
-                        j = 0;
-                    }
-                    else
-                    {
-                        j++;
+                        return true;
                     }
                 }
+                j++;
             }
             i++;
+            j = 0;
         }
+
+        return false;
     }
 
     private bool VerifyHorizontal(Vector2Int pos, string name)
@@ -148,6 +153,7 @@ public class Wall : MonoBehaviour
         var offset = new Vector2Int(1, 0);
         var pos1 = pos + offset;
         var pos2 = pos1 + offset;
+
         if (cellList.TryGetValue(pos1, out var aux))
         {
             if (cellList.TryGetValue(pos2, out var aux2))
@@ -198,8 +204,16 @@ public class Wall : MonoBehaviour
 
     private void RemoveButton(Cell cell)
     {
-        // pool.Retrieve(cell.Button.gameObject);
-        // cell.RemoveButton();
+        pool.Retrieve(cell.Button.gameObject);
+        cell.RemoveButton();
+    }
+
+    private void RemoveAllButtons()
+    {
+        foreach (var cell in cellList)
+        {
+            RemoveButton(cell.Value);
+        }
     }
 
     private void VerifySelectedCells(Cell cell)
@@ -213,6 +227,12 @@ public class Wall : MonoBehaviour
         else
         {
             selected2 = cell;
+            if (selected1 == selected2)
+            {
+                _anySelected = false;
+                RemoveSelectedVariables();
+                return;
+            }
             if (!IsPossibleDistance(selected1, selected2))
             {
                 _anySelected = false;
@@ -221,8 +241,16 @@ public class Wall : MonoBehaviour
             else
             {
                 _anySelected = false;
-                current = StartCoroutine(ChangeButtonsWithWait(ChangeButtons));
-                //FindMatch();
+                StartCoroutine(ChangeButtonsWithWait((x, y)=>
+                    {
+                        ChangeButtons(x, y);
+                        ResetVariables();
+                        if (FindMatch())
+                        {
+                            Debug.Log("Match!");
+                        }
+                    }
+                ));
             }
         }
     }
@@ -230,13 +258,12 @@ public class Wall : MonoBehaviour
     private void ChangeButtons(Cell cell1, Cell cell2)
     {
         (cell1.Button, cell2.Button) = (cell2.Button, cell1.Button);
-        cell1.RefreshButtonPosition();
-        cell2.RefreshButtonPosition();
-        ResetVariables();
     }
 
     private void ResetVariables()
     {
+        selected1.RefreshButtonPosition();
+        selected2.RefreshButtonPosition();
         selected1.SetHover(false);
         selected2.SetHover(false);
         selected1.SetCollider(true);
@@ -247,7 +274,7 @@ public class Wall : MonoBehaviour
     private bool IsPossibleDistance(Cell cell1, Cell cell2)
     {
         var distance = Vector3.Distance(cell1.transform.position, cell2.transform.position);
-        return ( distance == 1);
+        return (distance == 1);
     }
 
     private void RemoveSelectedVariables()
@@ -260,7 +287,7 @@ public class Wall : MonoBehaviour
 
     private IEnumerator ChangeButtonsWithWait(Action<Cell, Cell> callback)
     {
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds(.125f);
         callback?.Invoke(selected1, selected2);
     }
 }
